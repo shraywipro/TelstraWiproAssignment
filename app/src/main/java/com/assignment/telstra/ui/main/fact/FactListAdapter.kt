@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.assignment.telstra.R
+import com.assignment.telstra.R.*
 import com.assignment.telstra.core.store.online.models.FactData
 import com.assignment.telstra.glide.GlideApp
 import kotlinx.android.synthetic.main.item_facts.view.*
@@ -17,22 +17,25 @@ class FactListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindData(pos: Int) {
             val data = factList[pos]
+            itemView.tag = data
 
+            if (null != data.title) {
+                itemView.txtTitle.text = data.title
+            } else {
+                itemView.txtTitle.text = context.getString(string.no_data_available)
+            }
 
-                GlideApp.with(context)
-                    .load(data.imageUrl) // Uri of the picture
-                    .centerCrop()
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
-                    .into(itemView.imgView)
-
-                itemView.txtTitle.text =data.title
+            if (null != data.decription) {
                 itemView.txtDescription.text = data.decription
-
-        }
-
-        var itemClickListener: View.OnClickListener = View.OnClickListener { v ->
-            val pos=v.tag.toString().toInt()
+            } else {
+                itemView.txtDescription.text = context.getString(string.no_data_available)
+            }
+            GlideApp.with(context)
+                .load(data.imageUrl) // Uri of the picture
+                .centerCrop()
+                .placeholder(mipmap.ic_launcher)
+                .error(mipmap.ic_launcher)
+                .into(itemView.imgView)
 
         }
     }
@@ -40,7 +43,7 @@ class FactListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_facts, parent, false)
+            .inflate(layout.item_facts, parent, false)
         return ItemViewHolder(itemView)
     }
 
@@ -53,7 +56,7 @@ class FactListAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.
     }
 
     fun refreshList(requestList: List<FactData>) {
-        this.factList =requestList
+        this.factList = requestList
         notifyDataSetChanged()
     }
 

@@ -11,16 +11,22 @@ import org.mockito.Mockito
 class UtilsTest {
 
     lateinit var utils: Utils
+
     @Before
-    fun setup(){
+    fun setup() {
         utils = Mockito.mock(Utils::class.java)
     }
 
-
-    @Test fun testNetworkAvailibility(){
-      //  assertEquals(false, utils.isNetworkAvailable())
+    @Test
+    fun testNetworkAvailibility() {
+        assertEquals(false, utils.isNetworkAvailable())
         assertEquals(true, utils.isNetworkAvailable())
     }
 
+    @Test
+    fun testJson() {
+        //  assertEquals(false, utils.isNetworkAvailable())
+       // assertTrue("Check List is not empty", utils.isNetworkAvailable())
+    }
 
 }

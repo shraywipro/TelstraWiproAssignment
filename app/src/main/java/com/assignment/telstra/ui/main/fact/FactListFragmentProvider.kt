@@ -7,5 +7,5 @@ import dagger.android.ContributesAndroidInjector
 abstract class FactListFragmentProvider {
 
     @ContributesAndroidInjector(modules = [FactListFragmentModule::class])
-    abstract fun provideHiredMeFragmentFactory() : FactListFragment
+    abstract fun provideFactListFragmentFactory(): FactListFragment
 }

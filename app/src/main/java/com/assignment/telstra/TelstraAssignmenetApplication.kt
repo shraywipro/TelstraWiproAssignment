@@ -14,18 +14,18 @@ class TelstraAssignmenetApplication : DaggerApplication() {
     @Inject
     lateinit var apiService: ApiService
 
-    companion object{
+    companion object {
 
         private lateinit var instance: TelstraAssignmenetApplication
 
-        fun getInstance() : TelstraAssignmenetApplication{
+        fun getInstance(): TelstraAssignmenetApplication {
             return instance
         }
     }
 
     override fun onCreate() {
         super.onCreate()
-        instance=this
+        instance = this
 
     }
 

@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [AndroidSupportInjectionModule::class, AppModule::class, NetworkModule::class, ActivityBuilder::class])
-interface MainComponent : AndroidInjector<TelstraAssignmenetApplication>{
+interface MainComponent : AndroidInjector<TelstraAssignmenetApplication> {
 
     @Component.Builder
     abstract class Builder : AndroidInjector.Builder<TelstraAssignmenetApplication>()

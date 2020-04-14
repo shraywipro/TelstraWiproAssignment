@@ -14,17 +14,13 @@ abstract class BaseFragment<T : ViewModel> : DaggerFragment() {
     @Inject
     lateinit var appStore: AppStore
 
-    private lateinit var  viewModel: T
+    private lateinit var viewModel: T
 
-    abstract fun getViewModel() : T
+    abstract fun getViewModel(): T
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.viewModel=getViewModel()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
+        this.viewModel = getViewModel()
     }
 
 }

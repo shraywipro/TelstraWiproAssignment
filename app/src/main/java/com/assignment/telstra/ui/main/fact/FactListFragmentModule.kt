@@ -10,18 +10,18 @@ import dagger.Provides
 class FactListFragmentModule {
 
     @Provides
-    fun provideViewModel(repository: FactListRepository) : FactListFragmentViewModel{
+    fun provideViewModel(repository: FactListRepository): FactListFragmentViewModel {
         return FactListFragmentViewModel(repository)
     }
 
     @Provides
-    fun provideRepository(apiService: ApiService) : FactListRepository{
+    fun provideRepository(apiService: ApiService): FactListRepository {
         return FactListRepository(apiService)
     }
 
 
     @Provides
-    fun provideViewModelProvider(viewModel: FactListFragmentViewModel) : ViewModelProvider.Factory{
+    fun provideViewModelProvider(viewModel: FactListFragmentViewModel): ViewModelProvider.Factory {
         return ViewModelProviderFactory(viewModel)
     }
 

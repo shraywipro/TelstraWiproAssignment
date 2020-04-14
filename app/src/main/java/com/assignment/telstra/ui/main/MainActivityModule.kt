@@ -9,7 +9,7 @@ import dagger.Provides
 class MainActivityModule {
 
     @Provides
-    fun provideViewModel(apiService: ApiService, utils: Utils) : MainViewModel{
+    fun provideViewModel(apiService: ApiService, utils: Utils): MainViewModel {
         return MainViewModel(apiService = apiService, utils = utils)
     }
 }

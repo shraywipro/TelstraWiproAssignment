@@ -19,5 +19,6 @@
     <string name="dlg_title_alert" translatable="false">Alert</string>
     <string name="dlg_btn_ok" translatable="false">OK</string>
     <string name="text_telstra_assignment">Telstra Assignment</string>
+    <string name="no_data_available">No Data Available</string>
 
 </resources>

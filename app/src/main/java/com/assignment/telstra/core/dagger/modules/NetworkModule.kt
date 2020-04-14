@@ -1,9 +1,9 @@
 package com.assignment.telstra.core.dagger.modules
 
+import com.assignment.telstra.BuildConfig
 import com.assignment.telstra.core.store.AppStore
 import com.assignment.telstra.core.store.online.services.ApiService
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import com.assignment.telstra.BuildConfig
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -26,9 +26,10 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideClient() : OkHttpClient{
-        val logging= HttpLoggingInterceptor()
-        logging.level=if(BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+    fun provideClient(): OkHttpClient {
+        val logging = HttpLoggingInterceptor()
+        logging.level =
+            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         // httpClient.addInterceptor(getHeaderInterceptor())
         okHttpClinet = OkHttpClient.Builder()
             .connectTimeout(REQUEST_TIMEPUT, TimeUnit.SECONDS)
@@ -41,7 +42,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit() : Retrofit{
+    fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -52,7 +53,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit) : ApiService{
+    fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
 
@@ -61,7 +62,7 @@ class NetworkModule {
             override fun intercept(chain: Interceptor.Chain?): Response {
                 var request: okhttp3.Request = chain?.request()!!
                 val headers = request.headers().newBuilder()
-                    .add("Authorization", "Bearer "+"Token")//Token need to be replaced here
+                    .add("Authorization", "Bearer " + "Token")//Token need to be replaced here
                     .add("Accept", "application/json")
                     .add("description", "")
                     .add("userId", "")

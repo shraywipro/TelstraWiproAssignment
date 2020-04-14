@@ -2,17 +2,11 @@ package com.assignment.telstra.ui.main
 
 import android.content.Context
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.assignment.telstra.R
 import com.assignment.telstra.core.base.BaseActivity
 import com.assignment.telstra.databinding.ActivityMainBinding
-
-import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity<MainViewModel>() {
@@ -29,20 +23,20 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context=this
+        context = this
         initBinding()
     }
 
     /**
      * @desc method to init the view binding
      */
-    fun initBinding(){
+    fun initBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.mainViewModel=viewModel
+        binding.mainViewModel = viewModel
         initToolBar()
     }
 
-    private fun initToolBar(){
+    private fun initToolBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.let {
             it.title = "Facts"
@@ -51,9 +45,18 @@ class MainActivity : BaseActivity<MainViewModel>() {
         }
     }
 
-    fun updateTitle(title: String){
+    fun updateTitle(title: String) {
         supportActionBar?.let {
             it.title = title
+        }
+    }
+
+    fun loadFragment(fragment: Fragment?){
+        fragment?.let {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment, fragment)
+                .commit()
         }
     }
 

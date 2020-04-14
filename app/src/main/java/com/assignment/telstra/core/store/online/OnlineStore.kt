@@ -5,6 +5,4 @@ import javax.inject.Inject
 /**
  * @desc class to manage the online data storage
  */
-class OnlineStore @Inject constructor(){
-
-}
+class OnlineStore @Inject constructor()
