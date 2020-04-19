@@ -38,7 +38,7 @@ open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
     val noData: MutableLiveData<Int> = MutableLiveData()
     val noDataMsg: MutableLiveData<String> = MutableLiveData()
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
-    lateinit var factListAdapter: FactListAdapter //= FactListAdapter(activity!!)
+    lateinit var factListAdapter: FactListAdapter
     val recyclerVisibility: MutableLiveData<Int> = MutableLiveData()
 
     override fun getViewModel(): FactListFragmentViewModel {
@@ -77,7 +77,7 @@ open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
         getFactsList(false)
     }
 
-     fun getFactsList(bool: Boolean) {
+    fun getFactsList(bool: Boolean) {
         if (bool)
             showSwipeRefreshing()
 
@@ -172,5 +172,26 @@ open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
         if (loadingVisibility.value == 0)
             loadingVisibility.value = 8
     }
+
+    fun testFactsList() : Boolean{
+        var bool : Boolean
+        bool=true
+
+        // var factory: ViewModelProvider.Factory
+          //var viewModel: FactListFragmentViewModel
+
+      //  viewModel = ViewModelProviders.of(this, factory).get(FactListFragmentViewModel::class.java)
+
+        viewModel.getFactsList().observe(viewLifecycleOwner, Observer { data ->
+            bool = data != null
+        })
+        return bool
+    }
+
+     fun testProgressBar():Boolean {
+        loadingVisibility.value = 8
+        return false
+    }
+
 
 }
