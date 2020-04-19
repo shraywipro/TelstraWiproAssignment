@@ -3,7 +3,7 @@ package com.assignment.telstra.core.store.online.models
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class FactModel {
+open class FactModel {
 
     @SerializedName("title")
     @Expose

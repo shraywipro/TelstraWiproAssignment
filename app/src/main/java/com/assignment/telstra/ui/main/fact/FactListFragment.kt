@@ -177,11 +177,6 @@ open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
         var bool : Boolean
         bool=true
 
-        // var factory: ViewModelProvider.Factory
-          //var viewModel: FactListFragmentViewModel
-
-      //  viewModel = ViewModelProviders.of(this, factory).get(FactListFragmentViewModel::class.java)
-
         viewModel.getFactsList().observe(viewLifecycleOwner, Observer { data ->
             bool = data != null
         })

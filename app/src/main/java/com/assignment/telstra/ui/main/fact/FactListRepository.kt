@@ -10,7 +10,7 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
-class FactListRepository(val apiService: ApiService) {
+open class FactListRepository(val apiService: ApiService) {
 
     var responseMutableLiveData = MutableLiveData<FactModel?>()
     var disposable = CompositeDisposable()

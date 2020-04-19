@@ -100,7 +100,7 @@ class UtilsTest {
 // Exercise
         utils.isNetworkAvailable( context )
 // Verify
-        verify( connectivityManager).getNetworkInfo(true)
+        verify( connectivityManager).getNetworkInfo(0)
         verify( networkInfo ).isAvailable()
         verify( networkInfo ).isConnected()
 
