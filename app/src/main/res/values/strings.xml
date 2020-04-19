@@ -20,5 +20,8 @@
     <string name="dlg_btn_ok" translatable="false">OK</string>
     <string name="text_telstra_assignment">Telstra Assignment</string>
     <string name="no_data_available">No Data Available</string>
+    <string name="image_for_facts">Image for facts</string>
+    <string name="no_network">No Network Connection</string>
+    <string name="no_facts_found">No Facts Found</string>
 
 </resources>

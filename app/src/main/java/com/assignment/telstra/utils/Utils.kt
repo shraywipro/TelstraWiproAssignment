@@ -14,7 +14,7 @@ open class Utils @Inject constructor(val context: Context) {
     /**
      * @desc This function is used for checking internet connection
      */
-    fun isNetworkAvailable(): Boolean {
+    fun isNetworkAvailable(context: Context): Boolean {
 
         try {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

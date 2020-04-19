@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.assignment.telstra.core.store.online.models.FactModel
 import javax.inject.Inject
 
-class FactListFragmentViewModel @Inject constructor(val repository: FactListRepository) :
+open class FactListFragmentViewModel @Inject constructor(val repository: FactListRepository) :
     ViewModel() {
 
     private lateinit var responseLiveData: LiveData<FactModel?>
@@ -15,4 +15,9 @@ class FactListFragmentViewModel @Inject constructor(val repository: FactListRepo
         return responseLiveData
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        if (repository.disposable != null)
+            repository.disposable.clear()
+    }
 }

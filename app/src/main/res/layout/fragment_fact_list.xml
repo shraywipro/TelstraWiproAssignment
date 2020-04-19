@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.assignment.telstra.ui.main.fact.FactListFragmentViewModel" />
@@ -20,38 +22,38 @@
         android:background="@color/colorGhostWhite">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:refreshing="@{fragment.isRefreshing}"
+            app:onRefreshListener="@{fragment.onRefreshListener}">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerFactList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp" />
+                android:padding="10dp"
+                app:visibility="@{fragment.recyclerVisibility}"
+                app:adapter="@{fragment.factListAdapter}"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <ProgressBar
-            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibility="@{fragment.getLoadingVisibility()}" />
 
         <TextView
-            android:id="@+id/txtNoData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:text="No Facts Found."
+            android:text="@{fragment.noDataMsg}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/colorAccent"
             android:textStyle="bold"
@@ -59,8 +61,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibility="@{fragment.getNoData()}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

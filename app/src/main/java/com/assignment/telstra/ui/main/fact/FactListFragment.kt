@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.Nullable
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -20,12 +19,11 @@ import com.assignment.telstra.utils.Utils
 import kotlinx.android.synthetic.main.fragment_fact_list.view.*
 import javax.inject.Inject
 
-
 /**
  * @desc This fragment is responsible for getting facts from the server and to present to the user
  */
 open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
-    SwipeRefreshLayout.OnRefreshListener {
+    LifecycleOwner {
 
     lateinit var binding: FragmentFactListBinding
 
@@ -36,35 +34,21 @@ open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
     lateinit var factory: ViewModelProvider.Factory
     internal lateinit var viewModel: FactListFragmentViewModel
 
-    lateinit var adapter: FactListAdapter
+    val isRefreshing: MutableLiveData<Boolean> = MutableLiveData()
+    val noData: MutableLiveData<Int> = MutableLiveData()
+    val noDataMsg: MutableLiveData<String> = MutableLiveData()
+    val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
+    lateinit var factListAdapter: FactListAdapter //= FactListAdapter(activity!!)
+    val recyclerVisibility: MutableLiveData<Int> = MutableLiveData()
 
     override fun getViewModel(): FactListFragmentViewModel {
         viewModel = ViewModelProviders.of(this, factory).get(FactListFragmentViewModel::class.java)
         return viewModel
     }
 
-    internal class ViewLifecycleOwner : LifecycleOwner {
-        private val lifecycleRegistry = LifecycleRegistry(this)
-        override fun getLifecycle(): LifecycleRegistry {
-            return lifecycleRegistry
-        }
-    }
-
-    @Nullable
-    private var viewLifecycleOwner: ViewLifecycleOwner? = null
-
-    /**
-     * @return the Lifecycle owner of the current view hierarchy,
-     * or null if there is no current view hierarchy.
-     */
-    @Nullable
-    open fun getViewLifeCycleOwner(): LifecycleOwner? {
-        return viewLifecycleOwner
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = FactListAdapter(context!!)
+        factListAdapter = FactListAdapter(context!!)
     }
 
     override fun onCreateView(
@@ -75,82 +59,37 @@ open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_fact_list, container, false)
         binding.viewModel = viewModel
         binding.fragment = this
+
+        binding.lifecycleOwner = viewLifecycleOwner
         val view: View = binding.root
-        viewLifecycleOwner = ViewLifecycleOwner()
-        viewLifecycleOwner!!.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
         initUI()
         return view
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (viewLifecycleOwner != null) {
-            viewLifecycleOwner!!.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (viewLifecycleOwner != null) {
-            viewLifecycleOwner!!.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-        }
-    }
-
-    override fun onPause() {
-        if (viewLifecycleOwner != null) {
-            viewLifecycleOwner!!.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-        }
-        super.onPause()
-    }
-
-    override fun onStop() {
-        if (viewLifecycleOwner != null) {
-            viewLifecycleOwner!!.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-        }
-        super.onStop()
-    }
-
-    override fun onDestroyView() {
-        if (viewLifecycleOwner != null) {
-            viewLifecycleOwner!!.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            viewLifecycleOwner = null
-        }
-        super.onDestroyView()
     }
 
     /**
      * @desc method to init the UI elements
      */
     private fun initUI() {
-        binding.swipeRefreshLayout.setOnRefreshListener(this)
-        val mLayoutManager = LinearLayoutManager(context)
-        mLayoutManager.orientation = RecyclerView.VERTICAL
-        binding.recyclerFactList.layoutManager = mLayoutManager
-        binding.recyclerFactList.itemAnimator = DefaultItemAnimator()
-        binding.recyclerFactList.adapter = adapter
+        binding.recyclerFactList.layoutManager =
+            LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 
         getFactsList(false)
     }
 
-    override fun onRefresh() {
-
-        getFactsList(true)
-    }
-
-    private fun getFactsList(bool: Boolean) {
+     fun getFactsList(bool: Boolean) {
         if (bool)
             showSwipeRefreshing()
 
-        showProgressBar()
+        onRetrieveFactListStart()
 
-        if (utils.isNetworkAvailable()) {
+        if (utils.isNetworkAvailable(context!!)) {
 
-            viewModel.getFactsList().observe(this, Observer { data ->
+            viewModel.getFactsList().observe(viewLifecycleOwner, Observer { data ->
                 if (bool)
                     dismissSwipeRefresh()
 
-                hideProgressBar()
+                onRetrieveFactListFinish()
 
                 if (data != null) {
                     (activity as MainActivity).updateTitle(data.title!!)
@@ -158,23 +97,25 @@ open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
                         showNoDataMsg(false, "")
                         refreshAdapter(data.rows!!)
                     } else {
-                        showNoDataMsg(true, "No Facts Found")
+                        showNoDataMsg(true, getString(R.string.no_facts_found))
                     }
                 } else {
-                    showNoDataMsg(true, "No Facts Found")
+                    showNoDataMsg(true, getString(R.string.no_facts_found))
                 }
             })
         } else {
-            showNoDataMsg(true, "No Network Connection")
+            showNoDataMsg(true, getString(R.string.no_network))
             if (bool)
                 dismissSwipeRefresh()
+
+            onRetrieveFactListFinish()
 
         }
     }
 
-    //refresh adapter
+    //refresh list adapter
     private fun refreshAdapter(list: List<FactData>) {
-        adapter.refreshList(addNotNullPosition(list))
+        factListAdapter.refreshList(addNotNullPosition(list))
     }
 
     //method to add not null position in list
@@ -189,49 +130,47 @@ open class FactListFragment : BaseFragment<FactListFragmentViewModel>(),
         return dataList
     }
 
-    private fun showNoDataMsg(flag: Boolean, msg: String) {
-        if (flag) {
-            binding.txtNoData.text = msg
-            binding.txtNoData.visibility = View.VISIBLE
-            binding.recyclerFactList.visibility = View.INVISIBLE
-            binding.root.progressBar.visibility = View.GONE
-
-        } else {
-            binding.txtNoData.visibility = View.GONE
-            binding.recyclerFactList.visibility = View.VISIBLE
-            binding.root.progressBar.visibility = View.GONE
-
-        }
+    //swipe refresh listener
+    fun onRefreshListener() {
+        getFactsList(true)
     }
 
     /**
-     * @desc method to show refreshing
+     * @desc method to start refreshing
      */
     private fun showSwipeRefreshing() {
-        binding.swipeRefreshLayout.isRefreshing = true
+        isRefreshing.value = true
     }
 
     /**
      * @desc method to dismiss refreshing
      */
     private fun dismissSwipeRefresh() {
-        if (binding.swipeRefreshLayout.isRefreshing)
-            binding.swipeRefreshLayout.isRefreshing = false
+        if (isRefreshing.value!!)
+            isRefreshing.value = false
     }
 
-    /**
-     * @desc method to show progress bar
-     */
-    private fun showProgressBar() {
-        binding.root.progressBar.visibility = View.VISIBLE
-
+    private fun showNoDataMsg(flag: Boolean, msg: String) {
+        if (flag) {
+            noData.value = 0
+            recyclerVisibility.value = 8
+            noDataMsg.value = msg
+            onRetrieveFactListFinish()
+        } else {
+            noData.value = 8
+            noDataMsg.value = msg
+            recyclerVisibility.value = 0
+            onRetrieveFactListFinish()
+        }
     }
 
-    /**
-     * @desc method to hide progress bar
-     */
-    private fun hideProgressBar() {
-        binding.root.progressBar.visibility = View.GONE
-
+    private fun onRetrieveFactListStart() {
+        loadingVisibility.value = 0
     }
+
+    private fun onRetrieveFactListFinish() {
+        if (loadingVisibility.value == 0)
+            loadingVisibility.value = 8
+    }
+
 }
